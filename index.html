@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>英単語パスワード生成器 | xkcd式で覚えやすく安全なパスワードを生成</title>
+
+    <meta name="description"
+          content="暗号学的乱数を使用した安全な英単語パスワード生成器。覚えやすく強力なパスワードを無料で生成できます。">
+
+    <meta name="keywords"
+          content="パスワード生成器, パスワード, 英単語パスワード, セキュリティ, password generator">
+
+    <meta name="robots"
+          content="index, follow">
+
+    <meta name="theme-color"
+          content="#ffffff">
+
+    <!-- 実際のURLに変更 -->
+    <link rel="canonical"
+          href="https://sososoy2.github.io/password-generator/">
+
+    <!-- OGP -->
+    <meta property="og:title"
+          content="英単語パスワード生成器">
+
+    <meta property="og:description"
+          content="暗号学的乱数による安全なパスワード生成">
+
+    <meta property="og:type"
+          content="website">
+
+    <meta property="og:url"
+          content="https://sososoy2.github.io/password-generator/">
+
+    <meta name="twitter:card"
+          content="summary_large_image">
+
+    <!-- 構造化データ -->
+    <script type="application/ld+json">
+    {
+        "@context":"https://schema.org",
+        "@type":"WebApplication",
+        "name":"英単語パスワード生成器",
+        "applicationCategory":"SecurityApplication",
+        "operatingSystem":"Web",
+        "description":"暗号学的乱数を使用した安全なパスワード生成器"
+    }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP&display=swap" rel="stylesheet">
+
+    <style>
+:root {
+    --bg: #1f2328;
+    --text: #fff;
+    --card: #222;
+    --border: #444;
+    --footer: #aaa;
+    --accent: #1c8139;
+}
+
+body.light-mode {
+    --bg: #fff;
+    --text: #1f2328;
+    --card: #fafafa;
+    --border: #ddd;
+    --footer: #666;
+    --accent: #2563eb;
+}
+
+body {
+    font-family: "IBM Plex Sans JP", sans-serif;
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+    line-height: 1.7;
+
+    background: var(--bg);
+    color: var(--text);
+
+    transition:
+        background-color 0.2s,
+        color 0.2s;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.center {
+    text-align: center;
+}
+
+#password {
+    font-family:
+        ui-monospace,
+        monospace;
+
+    font-size: 2rem;
+
+    border: 1px solid var(--border);
+    border-radius: 6px;
+
+    padding: 20px;
+    margin: 20px 0;
+
+    background: var(--card);
+
+    word-break: break-all;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+
+    transition:
+        background-color 0.2s,
+        border-color 0.2s;
+}
+
+button {
+    background: var(--accent);
+    color: white;
+
+    border: none;
+    border-radius: 8px;
+
+    padding: 10px 16px;
+    margin: 5px;
+
+    cursor: pointer;
+    font-size: 1rem;
+
+    transition:
+        transform 0.1s,
+        opacity 0.2s;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+select {
+    padding: 8px;
+    margin: 5px;
+
+    border-radius: 4px;
+
+    background: var(--card);
+    color: var(--text);
+
+    border: 1px solid var(--border);
+}
+
+input[type="checkbox"] {
+    accent-color: var(--accent);
+}
+
+#strength, #length {
+    margin-top: 10px;
+    font-weight: bold;
+    text-align: center;
+}
+
+#message {
+    text-align: center;
+    margin-top: 10px;
+    color: #4ade80;
+}
+
+a {
+    color: var(--accent);
+}
+
+footer {
+    margin-top: 60px;
+    padding-top: 20px;
+
+    border-top: 1px solid var(--border);
+
+    font-size: 0.9rem;
+    color: var(--footer);
+
+    text-align: center;
+}
+
+footer a {
+    color: var(--accent);
+}
+
+.theme-switch-container {
+    position: fixed;
+
+    top: 15px;
+    left: 15px;
+
+    z-index: 1000;
+}
+
+.switch {
+    position: relative;
+
+    display: inline-block;
+
+    width: 52px;
+    height: 28px;
+}
+
+.switch input {
+    opacity: 0;
+
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+
+    inset: 0;
+
+    background: #666;
+
+    border-radius: 17px;
+
+    cursor: pointer;
+
+    transition: 0.25s;
+}
+
+.slider:before {
+    content: "";
+
+    position: absolute;
+
+    width: 22px;
+    height: 22px;
+
+    left: 3px;
+    top: 3px;
+
+    background: white;
+
+    border-radius: 50%;
+
+    transition: 0.25s;
+}
+
+input:checked + .slider {
+    background: var(--accent);
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+    </style>
+</head>
+
+<body>
+<div class="theme-switch-container">
+    🌙
+    <label class="switch">
+        <input type="checkbox" id="themeToggle">
+        <span class="slider"></span>
+    </label>
+    ☀️
+</div>
+<h1>英単語パスワード生成器</h1>
+
+<p class="center">
+xkcd式のパスフレーズを、暗号学的乱数で安全かつ覚えやすく生成できます。
+</p>
+
+<div class="center">
+    単語数:
+    <select id="wordCount">
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5" selected>5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+    </select>
+
+    区切り:
+    <select id="separator">
+        <option value="-">-</option>
+        <option value="_">_</option>
+        <option value="">なし</option>
+    </select>
+    <br>
+    <label>
+        <input type="checkbox" id="useUppercase">
+        大文字を使用
+    </label>
+    <label>
+        <input type="checkbox" id="useSymbols">
+        記号を使用
+    </label>
+</div>
+
+<div id="password">
+読み込み中...
+</div>
+
+<div class="center">
+    <button onclick="generatePassword()">
+        生成
+    </button>
+
+    <button onclick="copyPassword()">
+        コピー
+    </button>
+</div>
+
+<div id="strength"></div>
+<div id="length"></div>
+<div id="message"></div>
+
+<h2>特徴</h2>
+
+<ul>
+    <li>暗号学的乱数を使用</li>
+    <li>単語の重複なし</li>
+    <li>覚えやすく、十分に強力なパスフレーズを生成</li>
+    <li>無料・登録不要</li>
+    <li>サーバーで処理されずブラウザのみで動作</li>
+    <li>7776語の英単語</li>
+</ul>
+
+<h2>使い方</h2>
+
+<p>
+「生成」を押すだけで、新しい安全なパスワードを作成できます。
+生成されたパスワードは「コピー」ボタンでクリップボードへコピーできます。
+</p>
+
+<footer>
+Created by sososoy2 (おつまみさいこう)<br>
+<a href="https://github.com/sososoy2/password-generator/"
+   target="_blank"
+   rel="noopener noreferrer">
+    ソースコード (GitHub)
+</a><br>
+本サイトの利用によって生じた損害について、作者は責任を負いません。<br>
+生成されたパスワードの使用は利用者の責任で行ってください。
+</footer>
+
+<script src="script.js"></script>
+
+</body>
+</html>

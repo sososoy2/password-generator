@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap:
+https://sososoy2.github.io/password-generator/sitemap.xml
